@@ -1,0 +1,36 @@
+@(paging: Paging[Parent])
+
+@main(paging.title) {
+
+    <a href="@routes.Application.initData()">テストデータ初期化</a>
+
+    <div class="pagination pagination-right">
+      <ul>
+        <li class="@if(paging.pageNum==1){active}"><a href="@routes.Application.index(1)">&laquo;</a></li>
+        @for(page <- paging.pageNumList){<li class="@if(paging.pageNum==page){active}"><a href="@routes.Application.index(page)">@page</a></li>}
+        <li class="@if(paging.pageNum==paging.maxPageRowCount){active}"><a href="@routes.Application.index(paging.maxPageRowCount)">&raquo;</a></li>
+      </ul>
+    </div>
+    <table class="table table-bordered">
+      <thead>
+        <th>Parent Name</th>
+      </thead>
+      <tbody>
+      @for(parent <- paging.dataList){
+        <tr>
+          <td>
+              No.@parent.id&nbsp;@parent.name
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+    <div class="pagination pagination-right">
+      <ul>
+        <li class="@if(paging.pageNum==1){active}"><a href="@routes.Application.index(1)">&laquo;</a></li>
+        @for(page <- paging.pageNumList){<li class="@if(paging.pageNum==page){active}"><a href="@routes.Application.index(page)">@page</a></li>}
+        <li class="@if(paging.pageNum==paging.maxPageRowCount){active}"><a href="@routes.Application.index(paging.maxPageRowCount)">&raquo;</a></li>
+      </ul>
+    </div>
+
+}
