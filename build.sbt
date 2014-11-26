@@ -1,7 +1,7 @@
-name := """Page_nation_sample"""
+name := """page_nation_sample"""
 version := "1.0"
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.2"
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 libraryDependencies ++= Seq(
    jdbc
   ,"com.typesafe.slick" % "slick_2.11" % "2.1.0"

@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index(p: Int ?= 1)
-GET     /initData                   controllers.Application.initData
+POST    /initData                   controllers.Application.initData
 GET     /deleteAll                  controllers.Application.deleteAll
 
 # Map static resources from the /public folder to the /assets URL path
