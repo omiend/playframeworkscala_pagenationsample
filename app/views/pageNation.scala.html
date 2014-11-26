@@ -1,0 +1,8 @@
+@(pageNation: PageNation[_])
+<nav>
+  <ul class="pagination">
+    <li class="@if(pageNation.pageNum==1){active}"><a href="@routes.Application.index(1)">&laquo;</a></li>
+    @for(page <- pageNation.pageNumList){<li class="@if(pageNation.pageNum==page){active}"><a href="@routes.Application.index(page)">@page</a></li>}
+    <li class="@if(pageNation.pageNum==pageNation.maxPageRowCount){active}"><a href="@routes.Application.index(pageNation.maxPageRowCount)">&raquo;</a></li>
+  </ul>
+</nav>

@@ -1,49 +1,32 @@
 package controllers
 
-import play.api._
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.data.format.Formats._
+import play.api.mvc._           // Controller で利用
+// import play.api.Play.current // Actionで利用 ※DBActionを利用するのであれば不要
+import play.api.db.slick._      // DBAction で利用
 
-import anorm._
-import models._
-import views._
+import models._ // models/Data で利用
+import views._  // html.index で利用 ※views.html.indexと記述するのであれば不要
 
-
+/** Application Controller */
 object Application extends Controller {
-
-  /** トップ画面起動 */
-  def index(pageNum: Int) = Action { implicit request =>
-
-    // PageNationを初期化
-    val pager: PageNation[Data] = PageNation[Data]("list - crud_scala", pageNum, 0, List.empty)
-
-    // データ取得
-    val resultTuple = Data.findFromTo(pager.pageNum * pager.maxListCount - pager.maxListCount, pager.maxListCount)
-
-    // データリスト
-    pager.dataList = resultTuple._1
-
-    // 全体件数
-    pager.totalRows = resultTuple._2.toInt
-
-    Ok(html.index(pager))
+  /** Home */
+  def index(pageNum: Int) = DBAction { implicit request =>
+    val pageNation: PageNation[Data] = PageNation[Data]("Page Nation Sample", pageNum, Data.count, List.empty)
+    val resultTuple = 
+    pageNation.dataList = Data.findOffset(pageNation.pageNum * pageNation.maxListCount - pageNation.maxListCount, pageNation.maxListCount)
+    Ok(html.index(pageNation))
   }
-
-  def initData(pInx: Int) = Action { implicit request =>
-
-    // 全件削除
+  /** データ初期化 */
+  def initData = DBAction { implicit request =>
     Data.deleteAll
-
-    // Data作成
-    if (Data.findAll.isEmpty) {
-      for (i: Int <- 1 to pInx) {
-        Data.create(Data(Id(i), "Name_" + i))
-      }
+    for (i: Int <- 1 to 100) {
+      Data.insert(Data(Option(i.toLong), "Data Name %03d%n".format(i)))
     }
-
     Redirect(routes.Application.index(1))
   }
-
+  /** データ全件削除 */
+  def deleteAll = DBAction { implicit request =>
+    Data.deleteAll
+    Redirect(routes.Application.index(1))
+  }
 }

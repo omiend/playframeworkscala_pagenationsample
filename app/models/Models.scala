@@ -1,87 +1,24 @@
 package models
 
-import java.util.Date
-import play.api.db._
-import play.api.Play.current
-import anorm._
-import anorm.SqlParser._
+import scala.slick.driver.MySQLDriver.simple._ // Session 等で利用
 
-case class Data(id: Pk[Long] = NotAssigned, name: String)
-
+case class Data(id: Option[Long] = None, name: String)
+class DataTable(tag: Tag) extends Table[Data](tag, "data") {
+  def id   = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
+  def name = column[String]("name", O.NotNull)
+  def *    = (id, name) <> ((Data.apply _).tupled, Data.unapply)
+}
 object Data {
-
-  val simple = {
-    get[Pk[Long]]("data.id") ~
-    get[String]("data.name") map {
-      case id~name => Data(id, name)
-    }
-  }
-
-  def findAll: List[Data] = {
-    DB.withConnection { implicit connection =>
-      SQL(
-        """
-        select *
-          from data
-        """
-      ).as(
-        Data.simple *
-      )
-    }
-  }
-
-  def findFromTo(offset: Int, maxPageCount: Int) = {
-    DB.withConnection { implicit connection =>
-
-      // 親テーブル取得
-      val dataList: List[Data] = SQL(
-        """
-        select *
-          from data
-          limit {maxPageCount} offset {offset}
-        """
-      ).on(
-        'offset -> offset,
-        'maxPageCount -> maxPageCount
-      ).as(
-        Data.simple *
-      )
-
-      // 件数取得
-      val totalRows = SQL(
-        """
-        select count(*)
-          from data
-        """
-      ).as(scalar[Long].single)
-
-      // 返却
-      (dataList, totalRows)
-
-    }
-
-  }
-
-  def create(data: Data): Data = {
-    DB.withConnection { implicit connection =>
-      SQL(
-        """
-          insert into data values (
-              {id}
-             ,{name}
-          )
-        """
-      ).on(
-         'id   -> data.id
-        ,'name -> data.name
-      ).executeUpdate()
-      data
-    }
-  }
-
-  def deleteAll = {
-    DB.withConnection { implicit connection =>
-      SQL("delete from data").executeUpdate()
-    }
-  }
+  // DDL  
+  lazy val query = TableQuery[DataTable]
+  // 全件取得
+  def findAll()(implicit s: Session): List[Data] = query.list
+  // 全体件数取得
+  def count()(implicit s: Session): Int = query.list.size
+  // Offsetを指定して取得
+  def findOffset(offset: Int, limit: Int)(implicit s: Session): List[Data] = query.drop(offset).take(limit).list
+  // 登録
+  def insert(data: Data)(implicit s: Session) = query.insert(data)
+  // 条件無しの全件削除
+  def deleteAll()(implicit s: Session) = query.delete
 }

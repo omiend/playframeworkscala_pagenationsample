@@ -1,9 +1,10 @@
 package models
 
-import scala.reflect.BeanProperty
-
 /** ページング処理で利用するクラス */
-case class PageNation[A](var title: String, var pageNum: Int, var totalRows: Int, var dataList: List[A]) {
+case class PageNation[A](var title: String
+                        ,var pageNum: Int
+                        ,var totalRows: Int
+                        ,var dataList: List[A]) {
 
   /** １ページに表時するデータの件数 */
   val maxListCount: Int = 10
