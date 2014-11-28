@@ -2,7 +2,7 @@
 <nav>
   <ul class="pagination">
     <li class="@if(pageNation.currentPageNum==1){active}"><a href="@routes.Application.pageNation(1, pageName)">&laquo;</a></li>
-    @for(page <- pageNation.pageNumList){<li class="@if(pageNation.currentPageNum==page){active}"><a href="@routes.Application.pageNation(page1, pageName)">@page</a></li>}
-    <li class="@if(pageNation.currentPageNum==pageNation.totalPageNum){active}"><a href="@routes.Application.pageNation(pageNation.totalPageNum1, pageName)">&raquo;</a></li>
+    @for(page <- pageNation.pageNumList){<li class="@if(pageNation.currentPageNum==page){active}"><a href="@routes.Application.pageNation(page, pageName)">@page</a></li>}
+    <li class="@if(pageNation.currentPageNum==pageNation.totalPageNum){active}"><a href="@routes.Application.pageNation(pageNation.totalPageNum, pageName)">&raquo;</a></li>
   </ul>
 </nav>
