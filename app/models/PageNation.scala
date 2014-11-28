@@ -18,24 +18,6 @@ case class PageNation[T](currentPageNum: Int     // 現在のページ番号
     }
   }
 
-  /**
-   * ページ番号リストの作成起点となる番号を返却
-   */
-  def startIndex: Int = {
-    var ret: Int = 1
-    // 現在のページ番号
-    if (currentPageNum + PageNation.bfNum + 1 > totalPageNum) {
-      ret = totalPageNum - (PageNation.bfNum * 2)
-    } else {
-      ret = currentPageNum - PageNation.bfNum
-    }
-    // 0以下だったら1を返却
-    if (ret <= 0) {
-      ret = 1
-    }
-    ret
-  }
-
   /** ページ番号のリストを返却 */
   def pageNumList: List[Int] = {
     // 返却用
@@ -48,6 +30,24 @@ case class PageNation[T](currentPageNum: Int     // 現在のページ番号
       i + 1
     }
     pageNumList.reverse
+  }
+
+  /**
+   * ページ番号リストの作成起点となる番号を返却
+   */
+  private def startIndex: Int = {
+    var ret: Int = 1
+    // 現在のページ番号
+    if (currentPageNum + PageNation.bfNum + 1 > totalPageNum) {
+      ret = totalPageNum - (PageNation.bfNum * 2)
+    } else {
+      ret = currentPageNum - PageNation.bfNum
+    }
+    // 0以下だったら1を返却
+    if (ret <= 0) {
+      ret = 1
+    }
+    ret
   }
 }
 

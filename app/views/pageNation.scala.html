@@ -1,8 +1,10 @@
 @(pageNation: PageNation[_], pageName: String)
 <nav>
   <ul class="pagination">
-    <li class="@if(pageNation.currentPageNum==1){active}"><a href="@routes.Application.pageNation(1, pageName)">&laquo;</a></li>
+    <li class="@if(pageNation.currentPageNum==1){active}"><a href="@routes.Application.pageNation(1, pageName)">&lt;&lt;</a></li>
+    @if(pageNation.currentPageNum!=1){<li><a href="@routes.Application.pageNation(pageNation.currentPageNum - 1, pageName)">&lt;</a></li>}
     @for(page <- pageNation.pageNumList){<li class="@if(pageNation.currentPageNum==page){active}"><a href="@routes.Application.pageNation(page, pageName)">@page</a></li>}
-    <li class="@if(pageNation.currentPageNum==pageNation.totalPageNum){active}"><a href="@routes.Application.pageNation(pageNation.totalPageNum, pageName)">&raquo;</a></li>
+    @if(pageNation.currentPageNum!=pageNation.totalPageNum){<li><a href="@routes.Application.pageNation(pageNation.currentPageNum + 1, pageName)">&gt;</a></li>}
+    <li class="@if(pageNation.currentPageNum==pageNation.totalPageNum){active}"><a href="@routes.Application.pageNation(pageNation.totalPageNum, pageName)">&gt;&gt;</a></li>
   </ul>
 </nav>
