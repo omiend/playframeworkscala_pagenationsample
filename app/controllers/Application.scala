@@ -15,10 +15,13 @@ object Application extends Controller {
 
   /** Home */
   def index(currentPageNum: Int) = DBAction { implicit request =>
-    val pageNation: PageNation[Data] = PageNation[Data](currentPageNum, Data.count, List.empty)
-    val resultTuple = 
-    pageNation.dataList = Data.findOffset(pageNation.currentPageNum * PageNation.maxListCount - PageNation.maxListCount, PageNation.maxListCount)
-    Ok(html.index(pageNation, form))
+    Ok(html.index(PageNation[Data](
+         currentPageNum
+        ,Data.count
+        ,Data.findOffset(currentPageNum * PageNation.maxPageNum - PageNation.maxPageNum, PageNation.maxPageNum)
+      )
+     ,form)
+    )
   }
 
   /** データ初期化 */
@@ -26,21 +29,34 @@ object Application extends Controller {
   def initData = DBAction { implicit request =>
     form.bindFromRequest.fold(
       formWithErrors => {
-        Redirect(routes.Application.index(1))
+        Data.deleteAll
+        for (i: Int <- 1 to 100) {
+          Data.insert(Data(Option(i.toLong), "Data Name %03d%n".format(i)))
+        }
       },
       number => {
         Data.deleteAll
         for (i: Int <- 1 to number) {
           Data.insert(Data(Option(i.toLong), "Data Name %03d%n".format(i)))
         }
-        Redirect(routes.Application.index(1))
       }
     )
+    Redirect(routes.Application.index(1))
   }
 
   /** データ全件削除 */
   def deleteAll = DBAction { implicit request =>
     Data.deleteAll
     Redirect(routes.Application.index(1))
+  }
+
+  /** Page遷移先を指定 */
+  def pageNation(currentPageNum: Int, pageName: String) = Action { implicit request =>
+    pageName match {
+      case "index" => Redirect(routes.Application.index(currentPageNum))
+      // 新たにPageNationを利用する場合、ここに遷移先を追記する
+      // 例） case "secondPage" => Redirect(routes.Application.secondPage(currentPageNum))
+      case _       => Redirect(routes.Application.index(currentPageNum))
+    }
   }
 }

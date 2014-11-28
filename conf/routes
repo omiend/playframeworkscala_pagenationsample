@@ -7,5 +7,8 @@ GET     /                           controllers.Application.index(p: Int ?= 1)
 POST    /initData                   controllers.Application.initData
 GET     /deleteAll                  controllers.Application.deleteAll
 
+# PageNation
+GET     /pageNation                 controllers.Application.pageNation(p: Int ?= 1, page: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
